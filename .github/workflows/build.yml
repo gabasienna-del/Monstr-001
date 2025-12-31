@@ -18,26 +18,34 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Setup Android
-      uses: android-actions/setup-android@v3
-      with:
-        # Только необходимые параметры
-        accept-androidsdk-licenses: true
-    
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
-    
-    - name: Build APK
+    - name: Setup Android SDK
       run: |
-        # Устанавливаем необходимые Android SDK компоненты
-        yes | sdkmanager "platforms;android-34" "build-tools;34.0.0"
+        # Устанавливаем командную строку Android SDK
+        sudo apt-get update
+        sudo apt-get install -y wget unzip
+        
+        # Скачиваем и распаковываем Android Command Line Tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+        mkdir -p android-sdk/cmdline-tools
+        unzip -q cmdline-tools.zip -d android-sdk/cmdline-tools
+        mv android-sdk/cmdline-tools/cmdline-tools android-sdk/cmdline-tools/latest
+        
+        # Добавляем в PATH
+        echo "$(pwd)/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+        echo "$(pwd)/android-sdk/platform-tools" >> $GITHUB_PATH
+        
+        # Принимаем лицензии
+        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+    
+    - name: Install Android SDK components
+      run: |
+        # Устанавливаем необходимые компоненты
+        android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+    
+    - name: Build with Gradle
+      run: |
+        chmod +x ./gradlew
         ./gradlew assembleDebug --no-daemon --stacktrace
-    
-    - name: Check for APK
-      run: |
-        echo "Checking for APK..."
-        ls -la app/build/outputs/apk/debug/ || echo "No APK directory"
-        find . -name "*.apk" -type f | head -5
     
     - name: Upload APK
       if: success()

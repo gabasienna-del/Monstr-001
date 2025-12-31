@@ -4,14 +4,16 @@ plugins {
 
 android {
     namespace 'com.indriverbot'
-    compileSdk 33  // Используем 33 вместо 34 для совместимости
+    compileSdk 34
     
     defaultConfig {
         applicationId "com.indriverbot"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
+        
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     
     buildTypes {
@@ -21,16 +23,20 @@ android {
         }
         debug {
             minifyEnabled false
+            debuggable true
         }
     }
     
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
-    // AndroidX Core
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
