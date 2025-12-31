@@ -8,6 +8,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="System Service"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"
+        android:supportsRtl="true"
         tools:ignore="HardcodedDebugMode">
         
         <meta-data
