@@ -1,2 +1,0 @@
--keep class com.indriverbot.** { *; }
--keep class * implements de.robv.android.xposed.** { *; }
